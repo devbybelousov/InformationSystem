@@ -32,9 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsService customUserDetailService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Bean
@@ -58,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {return new BCryptPasswordEncoder(); }
 
+    @Override
     protected void configure(HttpSecurity http) throws Exception{
         http
                 .cors()
@@ -83,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/api/auth/**")
                 .permitAll()
-                .antMatchers("")
+                .antMatchers("/api/user/checkUsernameAvailability")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/users/**")
                 .permitAll()
