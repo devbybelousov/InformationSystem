@@ -8,6 +8,7 @@ import com.gazprom.InforamtionSystem.payload.*;
 import com.gazprom.InforamtionSystem.repository.RoleRepository;
 import com.gazprom.InforamtionSystem.repository.UserRepository;
 import com.gazprom.InforamtionSystem.security.JwtTokenProvider;
+import com.gazprom.InforamtionSystem.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collections;
@@ -48,6 +46,9 @@ public class LoginController {
 
     @Autowired
     JwtTokenProvider tokenProvider;
+
+    @Autowired
+    UserService userService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -79,24 +80,11 @@ public class LoginController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest signUpRequest) {
-        if (userRepository.existsByUserName(signUpRequest.getUserName())) {
-            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
-                    HttpStatus.BAD_REQUEST);
-        }
+        return userService.createUser(signUpRequest);
+    }
 
-        // Creating user's account
-        Role userRole = roleRepository.findByRole(String.valueOf(RoleName.ROLE_EMPLOYEE))
-                .orElseThrow(() -> new AppException("User Role not set."));
-
-        User user = new User(signUpRequest.getUserName(), signUpRequest.getPassword(),
-                signUpRequest.getName(), signUpRequest.getLastName(), signUpRequest.getMiddleName(), Collections.singleton(userRole));
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-
-        user.setRoles(Collections.singleton(userRole));
-        userRepository.save(user);
-
-        return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
+    @GetMapping("/public/key")
+    public String getPublicKey(){
+        return userService.getPublicKey();
     }
 }
