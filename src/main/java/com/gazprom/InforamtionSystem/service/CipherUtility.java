@@ -11,9 +11,6 @@ import java.util.Base64;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class CipherUtility {
-
-    CipherUtility(){}
-
     public static KeyPair generateKeyPair() throws Exception{
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
         generator.initialize(2048, new SecureRandom());
@@ -25,19 +22,15 @@ public class CipherUtility {
         InputStream inputStream = CipherUtility.class.getResourceAsStream("/keystore.jks");
 
         KeyStore keyStore = KeyStore.getInstance("JCEKS");
-        keyStore.load(inputStream, "s3cr3t".toCharArray());
-        KeyStore.PasswordProtection keyPassword = new KeyStore.PasswordProtection("s3cr3t".toCharArray());
+        keyStore.load(inputStream, "S3wQNPON".toCharArray());
+        KeyStore.PasswordProtection keyPassword = new KeyStore.PasswordProtection("S3wQNPON".toCharArray());
 
-        KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry("mykey", keyPassword);
-        Certificate certificate = keyStore.getCertificate("mykey");
+        KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry("gazprom", keyPassword);
+        Certificate certificate = keyStore.getCertificate("gazprom");
         PublicKey publicKey = certificate.getPublicKey();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
         return new KeyPair(publicKey, privateKey);
-    }
-
-    public static void setKeyStore() throws Exception{
-        SecretKey secretKey;
     }
 
     public static String encrypt(String plainText, String publicKey) throws Exception{
@@ -56,6 +49,17 @@ public class CipherUtility {
         byte[] cipherText = encryptCipher.doFinal(plainText.getBytes(UTF_8));
 
         return Base64.getEncoder().encodeToString(cipherText);
+    }
+
+    public static Object decrypt(String cipherText){
+        String decText = "";
+        try {
+            KeyPair keyPair = getKeyPairFromKeyStore();
+            decText = decrypt(cipherText, keyPair.getPrivate());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ConverterJson.converterToJSON(decText);
     }
 
     public static String decrypt(String cipherText, PrivateKey privateKey) throws Exception {

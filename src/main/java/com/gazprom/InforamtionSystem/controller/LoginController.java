@@ -8,6 +8,8 @@ import com.gazprom.InforamtionSystem.payload.*;
 import com.gazprom.InforamtionSystem.repository.RoleRepository;
 import com.gazprom.InforamtionSystem.repository.UserRepository;
 import com.gazprom.InforamtionSystem.security.JwtTokenProvider;
+import com.gazprom.InforamtionSystem.service.CipherUtility;
+import com.gazprom.InforamtionSystem.service.ConverterJson;
 import com.gazprom.InforamtionSystem.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +53,8 @@ public class LoginController {
     UserService userService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestParam String cipherText, @RequestParam String publicKey) {
+        LoginRequest loginRequest = (LoginRequest) CipherUtility.decrypt(cipherText);
         String username = loginRequest.getUserName();
         String password = loginRequest.getPassword();
         Authentication authentication;
@@ -75,11 +78,20 @@ public class LoginController {
 
         String jwt = tokenProvider.generateToken(authentication);
         UserProfile userProfile = new UserProfile(user.getId(), user.getUserName(), user.getName(), user.getLastName(), user.getMiddleName());
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, user.getRoles().iterator().next(), userProfile));
+        String cipherData = "";
+        try {
+            cipherData = CipherUtility.encrypt(ConverterJson.converterToJSON(new JwtAuthenticationResponse(jwt,
+                    user.getRoles().iterator().next(),
+                    userProfile)), publicKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok(cipherData);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@RequestParam String cipherText) {
+        UserRequest signUpRequest = (UserRequest) CipherUtility.decrypt(cipherText);
         return userService.createUser(signUpRequest);
     }
 

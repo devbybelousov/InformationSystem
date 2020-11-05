@@ -20,7 +20,7 @@ public class CipherUtilityTest {
     @Test
     public void cipherUtilityTest() throws Exception {
         String words = "Hello, World!";
-        KeyPair keyPair = CipherUtility.generateKeyPair();
+        KeyPair keyPair = CipherUtility.getKeyPairFromKeyStore();
         String newWord = CipherUtility.encrypt(words, keyPair.getPublic());
         String decodedWord = CipherUtility.decrypt(newWord, keyPair.getPrivate());
         //Assert.assertEquals(words, decodedWord);
