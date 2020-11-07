@@ -1,19 +1,29 @@
 package com.gazprom.InforamtionSystem.service;
 
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.security.*;
 import java.security.cert.Certificate;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+
 public class CipherUtility {
+
+    private static final Logger logger = LoggerFactory.getLogger(CipherUtility.class);
+
     public static KeyPair generateKeyPair() throws Exception{
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-        generator.initialize(2048, new SecureRandom());
+        generator.initialize(4096, new SecureRandom());
         KeyPair keyPair = generator.generateKeyPair();
         return keyPair;
     }
@@ -33,12 +43,31 @@ public class CipherUtility {
         return new KeyPair(publicKey, privateKey);
     }
 
-    public static String encrypt(String plainText, String publicKey) throws Exception{
-        byte[] encodedPublicKey = publicKey.getBytes();
+    public static String getPublicKey(){
+        StringWriter writer = new StringWriter();
+        PemWriter pemWriter = new PemWriter(writer);
+        try {
+            pemWriter.writeObject(new PemObject("PUBLIC KEY", getKeyPairFromKeyStore().getPublic().getEncoded()));
+            pemWriter.flush();
+            pemWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(encodedPublicKey);
+        return writer.toString();
+    }
+
+    public static String encrypt(String plainText, String publicKey) throws Exception{
+
+        String newKeyPublic = publicKey.replace("-----BEGIN PUBLIC KEY-----", "").
+                replace("-----END PUBLIC KEY-----", "");
+        byte[] encoded = org.apache.commons.codec.binary.Base64.decodeBase64(newKeyPublic);
+        X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(encoded);
+
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PublicKey key = keyFactory.generatePublic(spec);
+        PublicKey key = keyFactory.generatePublic(keySpecX509);
+        RSAPublicKey pubKey = (RSAPublicKey) keyFactory.generatePublic(keySpecX509);
+        logger.info(pubKey.toString());
         return CipherUtility.encrypt(plainText, key);
     }
 

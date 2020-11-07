@@ -53,10 +53,11 @@ public class LoginController {
     UserService userService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestParam String cipherText, @RequestParam String publicKey) {
-        LoginRequest loginRequest = (LoginRequest) CipherUtility.decrypt(cipherText);
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         String username = loginRequest.getUserName();
         String password = loginRequest.getPassword();
+        logger.warn(username);
+        logger.warn(password);
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
@@ -79,24 +80,22 @@ public class LoginController {
         String jwt = tokenProvider.generateToken(authentication);
         UserProfile userProfile = new UserProfile(user.getId(), user.getUserName(), user.getName(), user.getLastName(), user.getMiddleName());
         String cipherData = "";
+        logger.error(loginRequest.getPublicKey().replaceAll("\\n", "").
+                replace("-----BEGIN PUBLIC KEY-----", "").
+                replace("-----END PUBLIC KEY-----", ""));
         try {
             cipherData = CipherUtility.encrypt(ConverterJson.converterToJSON(new JwtAuthenticationResponse(jwt,
                     user.getRoles().iterator().next(),
-                    userProfile)), publicKey);
+                    userProfile)), loginRequest.getPublicKey());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok(cipherData);
+        return ResponseEntity.ok(new LoginResponse(cipherData, CipherUtility.getPublicKey()));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestParam String cipherText) {
         UserRequest signUpRequest = (UserRequest) CipherUtility.decrypt(cipherText);
         return userService.createUser(signUpRequest);
-    }
-
-    @GetMapping("/public/key")
-    public String getPublicKey(){
-        return userService.getPublicKey();
     }
 }

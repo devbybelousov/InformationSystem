@@ -3,7 +3,7 @@
 -----------------------------------
 **Авторизация пользователя**: _api/auth/signin_
 * входные данные: userName, password (Зашифрованные данные - строка), publicKey; 
-* выходные данные: accessToken, tokenType, role, user (Зашифрованные данные - строка)
+* выходные данные: message (accessToken, tokenType, role, user), publicKey 
 
 **Регистрация пользователя**:_api/auth/signup_
 * входные данные: userName, password, name, lastName, middleName, role, department (Зашифрованные данные - строка); 
@@ -12,7 +12,3 @@
 **Получение информации пользователя**: _api/user/info_
 * входные данные: id, publicKey (клиента);
 * выходные данные: userName, password, name, lastName, middleName, role, department (Зашифрованные данные - строка)
-
-**Получение открытого ключа**: _api/auth/public/key_
-* входные данные: нет;
-* выходные данные: строка
