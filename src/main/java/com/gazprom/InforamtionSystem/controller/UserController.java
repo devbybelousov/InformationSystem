@@ -1,5 +1,6 @@
 package com.gazprom.InforamtionSystem.controller;
 
+import com.gazprom.InforamtionSystem.payload.UserInfoRequest;
 import com.gazprom.InforamtionSystem.payload.UserResponse;
 import com.gazprom.InforamtionSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/info")
-    public ResponseEntity<?> infoUser(@RequestParam(value = "id") Long id, @RequestParam(value = "publicKey") String publicKey){
-        return ResponseEntity.ok(userService.getUserInfo(id, publicKey));
+    public ResponseEntity<?> infoUser(@RequestBody UserInfoRequest userInfoRequest){
+        return ResponseEntity.ok(userService.getUserInfo(Long.parseLong(userInfoRequest.getId()), userInfoRequest.getPublicKey()));
     }
 }

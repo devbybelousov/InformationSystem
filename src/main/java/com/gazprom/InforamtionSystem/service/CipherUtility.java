@@ -58,7 +58,6 @@ public class CipherUtility {
     }
 
     public static String encrypt(String plainText, String publicKey) throws Exception{
-
         String newKeyPublic = publicKey.replace("-----BEGIN PUBLIC KEY-----", "").
                 replace("-----END PUBLIC KEY-----", "");
         byte[] encoded = org.apache.commons.codec.binary.Base64.decodeBase64(newKeyPublic);
@@ -67,7 +66,6 @@ public class CipherUtility {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PublicKey key = keyFactory.generatePublic(keySpecX509);
         RSAPublicKey pubKey = (RSAPublicKey) keyFactory.generatePublic(keySpecX509);
-        logger.info(pubKey.toString());
         return CipherUtility.encrypt(plainText, key);
     }
 
@@ -88,7 +86,7 @@ public class CipherUtility {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ConverterJson.converterToJSON(decText);
+        return ConverterJson.parseJSON(decText);
     }
 
     public static String decrypt(String cipherText, PrivateKey privateKey) throws Exception {

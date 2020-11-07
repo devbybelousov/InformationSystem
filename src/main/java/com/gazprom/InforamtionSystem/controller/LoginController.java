@@ -53,11 +53,12 @@ public class LoginController {
     UserService userService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody CipherRequest cipherRequest) {
+        logger.error(cipherRequest.getCipher());
+        LoginRequest loginRequest = (LoginRequest)CipherUtility.decrypt(cipherRequest.getCipher());
+        logger.error(loginRequest.toString());
         String username = loginRequest.getUserName();
         String password = loginRequest.getPassword();
-        logger.warn(username);
-        logger.warn(password);
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
@@ -80,22 +81,21 @@ public class LoginController {
         String jwt = tokenProvider.generateToken(authentication);
         UserProfile userProfile = new UserProfile(user.getId(), user.getUserName(), user.getName(), user.getLastName(), user.getMiddleName());
         String cipherData = "";
-        logger.error(loginRequest.getPublicKey().replaceAll("\\n", "").
+        logger.error(cipherRequest.getPublicKey().replaceAll("\\n", "").
                 replace("-----BEGIN PUBLIC KEY-----", "").
                 replace("-----END PUBLIC KEY-----", ""));
         try {
             cipherData = CipherUtility.encrypt(ConverterJson.converterToJSON(new JwtAuthenticationResponse(jwt,
                     user.getRoles().iterator().next(),
-                    userProfile)), loginRequest.getPublicKey());
+                    userProfile)), cipherRequest.getPublicKey());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok(new LoginResponse(cipherData, CipherUtility.getPublicKey()));
+        return ResponseEntity.ok(cipherData);
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestParam String cipherText) {
-        UserRequest signUpRequest = (UserRequest) CipherUtility.decrypt(cipherText);
-        return userService.createUser(signUpRequest);
+    @GetMapping("/public/key")
+    public ResponseEntity<?> getPublicKey(){
+        return ResponseEntity.ok(CipherUtility.getPublicKey());
     }
 }

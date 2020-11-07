@@ -64,13 +64,13 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow();
         String userResponse = ConverterJson
                 .converterToJSON(new UserResponse(user.getUserName(),
-                                                user.getPassword(),
                                                 user.getName(),
                                                 user.getName(),
                                                 user.getMiddleName(),
                                                 user.getRoles().iterator().next(),
                                                 user.getDepartment()));
         String encodeUser = "";
+        logger.info(userResponse);
         try {
             encodeUser = CipherUtility.encrypt(userResponse, key);
         } catch (Exception e) {
