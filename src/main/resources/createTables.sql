@@ -1,0 +1,71 @@
+CREATE IF NOT EXISTS TABLE information_system
+(
+    id    int auto_increment
+        primary key,
+    title int null
+);
+
+CREATE IF NOT EXISTS TABLE roles
+(
+    role_id int auto_increment
+        primary key,
+    name    varchar(20) not null
+);
+
+CREATE IF NOT EXISTS TABLE unit
+(
+    unit_id int auto_increment
+        primary key,
+    title   varchar(100) not null
+);
+
+CREATE IF NOT EXISTS TABLE department
+(
+    department_id int auto_increment
+        primary key,
+    title         varchar(100) not null,
+    unit_id       int          not null,
+    constraint FK9u44ynbcut0e5t0ov7tuokdbk
+        foreign key (unit_id) references unit (unit_id)
+);
+
+CREATE IF NOT EXISTS TABLE user_role
+(
+    user_id bigint not null,
+    role_id int    not null,
+    primary key (user_id, role_id)
+)
+    engine = MyISAM;
+
+CREATE index FKt7e7djp752sqn6w22i6ocqy6q
+    on user_role (role_id);
+
+CREATE IF NOT EXISTS TABLE users
+(
+    user_id       int auto_increment
+        primary key,
+    user_name     varchar(50)  null,
+    password      varchar(100) not null,
+    name          varchar(50)  not null,
+    last_name     varchar(50)  not null,
+    middle_name   varchar(75)  null,
+    role_id       int          null,
+    department_id int          null,
+    constraint FKfi832e3qv89fq376fuh8920y4
+        foreign key (department_id) references department (department_id)
+);
+
+CREATE IF NOT EXISTS TABLE request
+(
+    request_id  int auto_increment
+        primary key,
+    user_id     int         not null,
+    system_id   int         not null,
+    filing_date datetime    not null,
+    validity    int         null,
+    status      varchar(10) null,
+    constraint FK7vrq809dxla5762q0jw6qxlmx
+        foreign key (system_id) references information_system (id),
+    constraint FKg03bldv86pfuboqfefx48p6u3
+        foreign key (user_id) references users (user_id)
+);
