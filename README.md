@@ -2,10 +2,10 @@
 Запросы:
 -----------------------------------
 **Авторизация пользователя**: _api/auth/signin_
-* входные данные: userName, password (Зашифрованные данные - строка), publicKey; 
+* входные данные: userName, password, publicKey; 
 * выходные данные: message (accessToken, tokenType, role, user), publicKey 
 
-**Регистрация пользователя**:_api/auth/signup_
+**Регистрация пользователя**: _api/auth/signup_
 * входные данные: userName, password, name, lastName, middleName, role, department (Зашифрованные данные - строка); 
 * выходные данные: ok
 
