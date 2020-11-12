@@ -1,21 +1,26 @@
 # Информационная система для подачи заявок
 Запросы:
 -----------------------------------
-**Авторизация пользователя**: _api/auth/signin_
-* входные данные: cipher (userName, password), publicKey; 
-* выходные данные: message (accessToken, tokenType, role, user), publicKey 
+**Авторизация пользователя (POST)**: _api/auth/signin_
+* входные данные: cipher (userName, password), publicKey (клиента); 
+* выходные данные: message (accessToken, tokenType, userId)
 
-**Добавление нового пользователя**: _api/admin/create/user_
-* входные данные: userName, password, name, lastName, middleName, role, department (Зашифрованные данные - строка); 
+**Добавление нового пользователя (POST)**: _api/admin/create/user_
+* входные данные: cipher (userName, password, name, lastName, middleName, role, department); 
 * выходные данные: ok
 
-**Получение информации пользователя**: _api/user/info_
+**Получение информации пользователя (GET)**: _api/user/info_
 * входные данные: id, publicKey (клиента);
-* выходные данные: userName, password, name, lastName, middleName, role, department (Зашифрованные данные - строка)
+* выходные данные: message(userName, name, lastName, middleName, role, department)
 
-**Получение открытого ключа**: _api/auth/public/key_
+**Получение открытого ключа (GET)**: _api/auth/public/key_
 * входные данные: нет;
-* выходные данные: строка
+* выходные данные: строка (publicKey сервера)
+
+**Получение всех заявок (GET)**: _api/admin/all/request_
+* входные данные: publicKey(клиента),
+* выходные данные: message(список, где id, 
+user(id, userName, name, lastName, middleName, role, department),system, validity, status, date)
 
 Подключение к БД:
 -----------------------------------

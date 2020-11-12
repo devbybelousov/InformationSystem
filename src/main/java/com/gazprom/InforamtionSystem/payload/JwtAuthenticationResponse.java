@@ -7,12 +7,10 @@ import lombok.Data;
 public class JwtAuthenticationResponse {
     private String accessToken;
     private String tokenType = "Bearer";
-    private Role role;
-    private UserProfile user;
+    private Long userId;
 
-    public JwtAuthenticationResponse(String accessToken, Role role, UserProfile user) {
+    public JwtAuthenticationResponse(String accessToken, Long userId) {
         this.accessToken = accessToken;
-        this.role = role;
-        this.user = user;
+        this.userId = userId;
     }
 }

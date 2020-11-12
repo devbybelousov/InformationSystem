@@ -54,9 +54,7 @@ public class LoginController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody CipherRequest cipherRequest) {
-        logger.error(cipherRequest.getCipher());
         LoginRequest loginRequest = (LoginRequest)CipherUtility.decrypt(cipherRequest.getCipher());
-        logger.error(loginRequest.toString());
         String username = loginRequest.getUserName();
         String password = loginRequest.getPassword();
         Authentication authentication;
@@ -79,15 +77,12 @@ public class LoginController {
                 );
 
         String jwt = tokenProvider.generateToken(authentication);
-        UserProfile userProfile = new UserProfile(user.getId(), user.getUserName(), user.getName(), user.getLastName(), user.getMiddleName());
         String cipherData = "";
         logger.error(cipherRequest.getPublicKey().replaceAll("\\n", "").
                 replace("-----BEGIN PUBLIC KEY-----", "").
                 replace("-----END PUBLIC KEY-----", ""));
         try {
-            cipherData = CipherUtility.encrypt(ConverterJson.converterToJSON(new JwtAuthenticationResponse(jwt,
-                    user.getRoles().iterator().next(),
-                    userProfile)), cipherRequest.getPublicKey());
+            cipherData = CipherUtility.encrypt(ConverterJson.converterToJSON(new JwtAuthenticationResponse(jwt, user.getId())), cipherRequest.getPublicKey());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,6 +91,6 @@ public class LoginController {
 
     @GetMapping("/public/key")
     public ResponseEntity<?> getPublicKey(){
-        return ResponseEntity.ok(CipherUtility.getPublicKey());
+        return ResponseEntity.ok(userService.getPublicKey());
     }
 }

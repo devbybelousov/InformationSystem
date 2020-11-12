@@ -31,7 +31,7 @@ public class Request {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    public User department;
+    public User user;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "system_id")

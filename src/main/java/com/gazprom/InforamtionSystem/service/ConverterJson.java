@@ -21,4 +21,9 @@ public class ConverterJson {
         return new Gson().toJson(object, Object.class);
     }
 
+    public static String arrayConverterToJSON(List<Object> objects){
+        Type listType = new TypeToken<List<Object>>() {}.getType();
+        return new Gson().toJson(objects, listType);
+    }
+
 }
