@@ -32,6 +32,9 @@ user(id, userName, name, lastName, middleName, role, department),system, validit
 system, validity, status, date[day, month, year])
 
 **Изменить статус заявки (POST)**:
+* входные данные: 
+* выходные данные: 
+
 Подключение к БД:
 -----------------------------------
 1. Database -> + -> Data Source -> MySQL\
