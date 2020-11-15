@@ -31,9 +31,11 @@ user(id, userName, name, lastName, middleName, role, department),system, validit
 * выходные данные: message(спиок - id, user[id, userName, name, lastName, middleName, role, department], 
 system, validity, status, date[day, month, year])
 
-**Изменить статус заявки (POST)**:
-* входные данные: 
-* выходные данные: 
+**Изменить статус заявки (GET)**: _api/admin/update/status_
+* входные данные: requestId, status*
+* выходные данные: ok
+
+_*status - нужно отправить одно из (STATUS_ENABLE, STATUS_DISABLE, STATUS_REFUSED, STATUS_SHIPPED)_
 
 Подключение к БД:
 -----------------------------------

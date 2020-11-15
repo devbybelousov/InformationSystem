@@ -29,4 +29,10 @@ public class AdminController {
     public ResponseEntity<?> getAllRequest(@RequestParam(name = "publicKey") String publicKey){
         return ResponseEntity.ok(userService.getAllRequest(publicKey));
     }
+
+    @GetMapping("update/status")
+    public ResponseEntity<?> updateStatusRequest(@RequestParam(name = "requestId") Long id,
+                                                 @RequestParam(name = "newStatus") String status){
+        return ResponseEntity.ok(userService.updateStatusRequest(id, status));
+    }
 }

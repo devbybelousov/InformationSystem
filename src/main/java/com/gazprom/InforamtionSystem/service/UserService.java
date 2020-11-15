@@ -123,6 +123,13 @@ public class UserService {
                 publicKey);
     }
 
+    public String updateStatusRequest(Long id, String status){
+        Request request = requestRepository.getById(id);
+        request.setStatus(status);
+        requestRepository.save(request);
+        return "Status updated successfully";
+    }
+
     private List<ApplicationResponse> getFormatRequestList(List<Request> requestList){
         List<ApplicationResponse> applicationResponseList = new ArrayList<>();
         for (Request request : requestList) {
