@@ -22,6 +22,16 @@
 * выходные данные: message(список, где id, 
 user(id, userName, name, lastName, middleName, role, department),system, validity, status, date)
 
+**Создание новой заявки (POST)**: _api/user/add/request_
+* входные данные: message(userId, system, validity, date[day, month, year])
+* выходные данные: ok
+
+**Получение заявок конкретного пользователя (GET)**: _api/user/request_
+* входные данные: userId, publicKey (клиента)
+* выходные данные: message(спиок - id, user[id, userName, name, lastName, middleName, role, department], 
+system, validity, status, date[day, month, year])
+
+**Изменить статус заявки (POST)**:
 Подключение к БД:
 -----------------------------------
 1. Database -> + -> Data Source -> MySQL\

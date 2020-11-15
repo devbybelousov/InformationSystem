@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 
 @Data
@@ -31,9 +33,18 @@ public class Request {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    public User user;
+    private User user;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "system_id")
-    public InformationSystem informationSystem;
+    private InformationSystem informationSystem;
+
+
+    public Request(String status, Timestamp filingDate, Long validity, User user, InformationSystem system) {
+        this.status = status;
+        this.filingDate = filingDate;
+        this.informationSystem = system;
+        this.validity = validity;
+        this.user = user;
+    }
 }

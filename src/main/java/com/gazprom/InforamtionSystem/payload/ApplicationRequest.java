@@ -9,11 +9,9 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplicationResponse {
-    private Long id;
-    private UserProfile user;
+public class ApplicationRequest {
+    private Long userId;
     private String system;
     private Long validity;
-    private String status;
     private FillingData date;
 }

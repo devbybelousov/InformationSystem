@@ -1,27 +1,25 @@
 package com.gazprom.InforamtionSystem.service;
 
 import com.gazprom.InforamtionSystem.enumeration.RoleName;
+import com.gazprom.InforamtionSystem.enumeration.StatusName;
 import com.gazprom.InforamtionSystem.exception.AppException;
+import com.gazprom.InforamtionSystem.model.InformationSystem;
 import com.gazprom.InforamtionSystem.model.Request;
 import com.gazprom.InforamtionSystem.model.Role;
 import com.gazprom.InforamtionSystem.model.User;
-import com.gazprom.InforamtionSystem.payload.ApiResponse;
-import com.gazprom.InforamtionSystem.payload.ApplicationResponse;
-import com.gazprom.InforamtionSystem.payload.UserRequest;
-import com.gazprom.InforamtionSystem.payload.UserProfile;
+import com.gazprom.InforamtionSystem.payload.*;
 import com.gazprom.InforamtionSystem.repository.RequestRepository;
 import com.gazprom.InforamtionSystem.repository.RoleRepository;
+import com.gazprom.InforamtionSystem.repository.SystemRepository;
 import com.gazprom.InforamtionSystem.repository.UserRepository;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.KeyPair;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +35,9 @@ public class UserService {
 
     @Autowired
     RequestRepository requestRepository;
+
+    @Autowired
+    SystemRepository systemRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -60,6 +61,7 @@ public class UserService {
 
         user.setRoles(Collections.singleton(userRole));
         userRepository.save(user);
+        logger.debug("User is create.");
         return true;
     }
 
@@ -89,23 +91,59 @@ public class UserService {
     @SneakyThrows
     public String getAllRequest(String publicKey){
         List<Request> requestList = requestRepository.getAll();
-        List<ApplicationResponse> applicationResponses = new ArrayList<>();
-        for (Request request : requestList){
-            applicationResponses.add(new ApplicationResponse(
+        return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(
+                Collections.singletonList(getFormatRequestList(requestList))),
+                publicKey);
+    }
+
+    public boolean addRequest(String message){
+        ApplicationRequest applicationRequest = (ApplicationRequest) CipherUtility.decrypt(message);
+        User user = userRepository.findById(applicationRequest.getUserId())
+                .orElseThrow(() -> new AppException("User not found."));
+        InformationSystem informationSystem = systemRepository.findByTitle(applicationRequest.getSystem());
+        Request request = new Request(StatusName.STATUS_SHIPPED.toString(),
+                                    Timestamp.valueOf(
+                                                    applicationRequest.getDate().getYear() + "-" +
+                                                    applicationRequest.getDate().getMonth() + "-" +
+                                                    applicationRequest.getDate().getDay() + " 00:00:00.0"),
+                                    applicationRequest.getValidity(),
+                                    user,
+                                    informationSystem);
+        requestRepository.save(request);
+        logger.debug("Request is create.");
+        return true;
+    }
+
+    @SneakyThrows
+    public String getRequest(Long userId, String publicKey){
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException("User not found."));
+
+        return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(
+                Collections.singletonList(getFormatRequestList(user.getRequestList()))),
+                publicKey);
+    }
+
+    private List<ApplicationResponse> getFormatRequestList(List<Request> requestList){
+        List<ApplicationResponse> applicationResponseList = new ArrayList<>();
+        for (Request request : requestList) {
+            applicationResponseList.add(new ApplicationResponse(
                     request.getId(),
                     new UserProfile(request.getUser().getId(),
-                                    request.getUser().getUserName(),
-                                    request.getUser().getName(),
-                                    request.getUser().getLastName(),
-                                    request.getUser().getMiddleName(),
-                                    request.getUser().getRoles().iterator().next(),
-                                    request.getUser().getDepartment()),
+                            request.getUser().getUserName(),
+                            request.getUser().getName(),
+                            request.getUser().getLastName(),
+                            request.getUser().getMiddleName(),
+                            request.getUser().getRoles().iterator().next(),
+                            request.getUser().getDepartment()),
                     request.getInformationSystem().getTitle(),
                     request.getValidity(),
                     request.getStatus(),
-                    request.getFilingDate()
+                    new FillingData(request.getFilingDate().getDay(),
+                            request.getFilingDate().getMonth(),
+                            request.getFilingDate().getYear())
+
             ));
         }
-        return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(Collections.singletonList(applicationResponses)), publicKey);
+        return applicationResponseList;
     }
 }

@@ -24,6 +24,11 @@ public class UserController {
     @GetMapping("/request")
     public ResponseEntity<?> getRequests(@RequestParam (name = "id") Long userId,
                                          @RequestParam(name = "publicKey") String publicKey){
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(userService.getRequest(userId, publicKey));
+    }
+
+    @PostMapping("/add/request")
+    public ResponseEntity<?> addRequest(@RequestBody String message){
+        return ResponseEntity.ok(userService.addRequest(message));
     }
 }
