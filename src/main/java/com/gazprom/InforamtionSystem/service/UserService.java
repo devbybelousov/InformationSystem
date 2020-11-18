@@ -90,7 +90,7 @@ public class UserService {
 
     @SneakyThrows
     public String getAllRequest(String publicKey){
-        List<Request> requestList = requestRepository.getAll();
+        List<Request> requestList = requestRepository.findAll();
         return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(
                 Collections.singletonList(getFormatRequestList(requestList))),
                 publicKey);
