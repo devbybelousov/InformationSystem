@@ -31,4 +31,14 @@ public class UserController {
     public ResponseEntity<?> addRequest(@RequestBody String message){
         return ResponseEntity.ok(userService.addRequest(message));
     }
+
+    @GetMapping("/unit")
+    public ResponseEntity<?> getAllUnits(@RequestParam (name = "publicKey") String publicKey){
+        return ResponseEntity.ok(userService.getAllUnit(publicKey));
+    }
+
+    @GetMapping("/department")
+    public ResponseEntity<?> getAllDepartments(@RequestParam (name = "publicKey") String publicKey){
+        return ResponseEntity.ok(userService.getAllDepartment(publicKey));
+    }
 }

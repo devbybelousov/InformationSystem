@@ -30,9 +30,16 @@ public class AdminController {
         return ResponseEntity.ok(userService.getAllRequest(publicKey));
     }
 
-    @GetMapping("update/status")
+    @GetMapping("/update/status")
     public ResponseEntity<?> updateStatusRequest(@RequestParam(name = "requestId") Long id,
                                                  @RequestParam(name = "newStatus") String status){
         return ResponseEntity.ok(userService.updateStatusRequest(id, status));
     }
+
+    @GetMapping("/role")
+    public ResponseEntity<?> getAllRoles(@RequestParam (name = "publicKey") String publicKey){
+        return ResponseEntity.ok(userService.getAllRole(publicKey));
+    }
+
+
 }

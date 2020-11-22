@@ -3,15 +3,9 @@ package com.gazprom.InforamtionSystem.service;
 import com.gazprom.InforamtionSystem.enumeration.RoleName;
 import com.gazprom.InforamtionSystem.enumeration.StatusName;
 import com.gazprom.InforamtionSystem.exception.AppException;
-import com.gazprom.InforamtionSystem.model.InformationSystem;
-import com.gazprom.InforamtionSystem.model.Request;
-import com.gazprom.InforamtionSystem.model.Role;
-import com.gazprom.InforamtionSystem.model.User;
+import com.gazprom.InforamtionSystem.model.*;
 import com.gazprom.InforamtionSystem.payload.*;
-import com.gazprom.InforamtionSystem.repository.RequestRepository;
-import com.gazprom.InforamtionSystem.repository.RoleRepository;
-import com.gazprom.InforamtionSystem.repository.SystemRepository;
-import com.gazprom.InforamtionSystem.repository.UserRepository;
+import com.gazprom.InforamtionSystem.repository.*;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +34,12 @@ public class UserService {
     SystemRepository systemRepository;
 
     @Autowired
+    UnitRepository unitRepository;
+
+    @Autowired
+    DepartmentRepository departmentRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -49,12 +49,15 @@ public class UserService {
             return false;
         }
 
-        Role userRole = roleRepository.findByRole(String.valueOf(RoleName.ROLE_EMPLOYEE))
+        Role userRole = roleRepository.findById(userRequest.getRoleId())
                 .orElseThrow(() -> new AppException("User Role not set."));
+        Department department = departmentRepository.findById(userRequest.getDepartmentId())
+                .orElseThrow(() -> new AppException(("User Department not set.")));
+
 
         User user = new User(userRequest.getUserName(), userRequest.getPassword(),
                             userRequest.getName(), userRequest.getLastName(),
-                            userRequest.getMiddleName(), Collections.singleton(userRole));
+                            userRequest.getMiddleName(), Collections.singleton(userRole), department);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -152,5 +155,23 @@ public class UserService {
             ));
         }
         return applicationResponseList;
+    }
+
+    @SneakyThrows
+    public String getAllUnit(String publicKey){
+        List<Unit> units = unitRepository.findAll();
+        return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(units), publicKey);
+    }
+
+    @SneakyThrows
+    public String getAllDepartment(String publicKey){
+        List<Department> departments = departmentRepository.findAll();
+        return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(departments), publicKey);
+    }
+
+    @SneakyThrows
+    public String getAllRole(String publicKey){
+        List<Role> roleList = roleRepository.findAll();
+        return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(roleList), publicKey);
     }
 }

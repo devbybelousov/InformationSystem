@@ -51,13 +51,24 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<Request> requestList;
 
-    public User(@Length(min = 5, message = "*Your user name must have at least 5 characters") @NotEmpty(message = "*Please provide a user name") String userName, @Length(min = 5, message = "*Your password must have at least 5 characters") @NotEmpty(message = "*Please provide your password") String password, @NotEmpty(message = "*Please provide your name") String name, @NotEmpty(message = "*Please provide your last name") String lastName, @NotEmpty(message = "*Please provide your middle name") String middleName, Set<Role> roles) {
+    public User( String userName, String password, String name, String lastName, String middleName, Set<Role> roles) {
         this.userName = userName;
         this.password = password;
         this.name = name;
         this.lastName = lastName;
         this.middleName = middleName;
         this.roles = roles;
+    }
+
+    public User(String userName, String password, String name, String lastName,
+                String middleName, Set<Role> roles, Department department) {
+        this.userName = userName;
+        this.password = password;
+        this.name = name;
+        this.lastName = lastName;
+        this.middleName = middleName;
+        this.roles = roles;
+        this.department = department;
     }
 
     public User(String userName, String password){
