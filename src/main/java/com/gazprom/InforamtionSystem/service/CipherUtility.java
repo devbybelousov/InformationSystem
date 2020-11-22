@@ -59,7 +59,7 @@ public class CipherUtility {
 
     public static String encrypt(String plainText, String publicKey) throws Exception{
         String newKeyPublic = publicKey.replace("-----BEGIN PUBLIC KEY-----", "").
-                replace("-----END PUBLIC KEY-----", "");
+                replace("-----END PUBLIC KEY-----", "").replace(" ", "+");;
         byte[] encoded = org.apache.commons.codec.binary.Base64.decodeBase64(newKeyPublic);
         X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(encoded);
 
