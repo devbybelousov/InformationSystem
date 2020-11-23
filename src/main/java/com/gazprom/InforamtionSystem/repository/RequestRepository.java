@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
     Request getById(Long id);
+    List<Request> getAllByStatus(String status);
 }

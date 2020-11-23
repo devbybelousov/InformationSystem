@@ -28,28 +28,28 @@ user(id, userName, name, lastName, middleName, role, department),system, validit
 * входные данные: message(userId, system, validity, date[day, month, year])
 * выходные данные: ok
 
-**Получение заявок конкретного пользователя (GET)**: _api/user/request_
+**Получение заявок конкретного пользователя (GET)**: _api/user/all/request_
 * входные данные: userId, publicKey (клиента)
 * выходные данные: data(список - id, user[id, userName, name, lastName, middleName, role, department], 
 system, validity, status, date[day, month, year])
 * пример: api/user/request?userId=1publicKey=...
 
-**Получить все отделы (GET)**: _api/user/unit_
+**Получить все отделы (GET)**: _api/user/all/unit_
 * входные данные: publicKey (клиента)
 * выходные данные: data(список - id, title)
 * пример: api/user/unit?publicKey=...
 
-**Получить все должности (GET)**: _api/admin/role_
+**Получить все должности (GET)**: _api/admin/all/role_
 * входные данные: publicKey (клиента)
 * выходные данные: data(список - id, role)
 * пример: api/admin/role?publicKey=...
 
-**Получить все подразделения (GET)**: _api/user/department_
+**Получить все подразделения (GET)**: _api/user/all/department_
 * входные данные: publicKey (клиента)
 * выходные данные: data(список - id, title)
 * пример: api/user/department?publicKey=...
 
-**Получить все информационные системы (GET)**: _api/user/system_
+**Получить все информационные системы (GET)**: _api/user/all/system_
 * входные данные: publicKey (клиента)
 * выходные данные: data(список - id, title)
 * пример: api/user/system?publicKey=...
@@ -70,6 +70,12 @@ system, validity, status, date[day, month, year])
 **Добавить новое подразделение (POST)**: _api/admin/add/department_
 * входные данные: message(title, unitId)
 * выходные данные: ok
+
+**Получение всех активных заявок (GET)**: _api/user/all/request/active_
+* входные данные: publicKey(клиента),
+* выходные данные: message(список, где id, 
+user(id, userName, name, lastName, middleName, role, department),system, validity, status, date)
+* пример: api/admin/all/request?publicKey=...
 
 _*status - нужно отправить одно из (STATUS_ENABLE, STATUS_DISABLE, STATUS_REFUSED, STATUS_SHIPPED)_
 

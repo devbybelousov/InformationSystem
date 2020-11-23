@@ -95,7 +95,7 @@ public class UserService {
     public String getAllRequest(String publicKey){
         List<Request> requestList = requestRepository.findAll();
         return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(
-                Collections.singletonList(getFormatRequestList(requestList))),
+                getFormatRequestList(requestList)),
                 publicKey);
     }
 
@@ -120,9 +120,8 @@ public class UserService {
     @SneakyThrows
     public String getRequest(Long userId, String publicKey){
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException("User not found."));
-
         return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(
-                Collections.singletonList(getFormatRequestList(user.getRequestList()))),
+                getFormatRequestList(user.getRequestList())),
                 publicKey);
     }
 
@@ -205,5 +204,13 @@ public class UserService {
     public String getAllSystem(String publicKey){
         List<InformationSystem> systemList = systemRepository.findAll();
         return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(systemList), publicKey);
+    }
+
+    @SneakyThrows
+    public String getAllRequestActive(String publicKey){
+        List<Request> requestList = requestRepository.getAllByStatus(StatusName.STATUS_ENABLE.toString());
+        return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(
+                getFormatRequestList(requestList)),
+                publicKey);
     }
 }

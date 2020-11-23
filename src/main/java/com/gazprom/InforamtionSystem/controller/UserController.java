@@ -21,7 +21,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserInfo(Long.parseLong(id), publicKey));
     }
 
-    @GetMapping("/request")
+    @GetMapping("/all/request")
     public ResponseEntity<?> getRequests(@RequestParam (name = "id") Long userId,
                                          @RequestParam(name = "publicKey") String publicKey){
         return ResponseEntity.ok(userService.getRequest(userId, publicKey));
@@ -32,18 +32,23 @@ public class UserController {
         return ResponseEntity.ok(userService.addRequest(message));
     }
 
-    @GetMapping("/unit")
+    @GetMapping("/all/unit")
     public ResponseEntity<?> getAllUnits(@RequestParam (name = "publicKey") String publicKey){
         return ResponseEntity.ok(userService.getAllUnit(publicKey));
     }
 
-    @GetMapping("/department")
+    @GetMapping("/all/department")
     public ResponseEntity<?> getAllDepartments(@RequestParam (name = "publicKey") String publicKey){
         return ResponseEntity.ok(userService.getAllDepartment(publicKey));
     }
 
-    @GetMapping("/system")
+    @GetMapping("/all/system")
     public ResponseEntity<?> getAllSystem(@RequestParam (name = "publicKey") String publicKey){
         return ResponseEntity.ok(userService.getAllSystem(publicKey));
+    }
+
+    @GetMapping("/all/request/active")
+    public ResponseEntity<?> getAllActiveRequest(@RequestParam (name = "publicKey") String publicKey){
+        return ResponseEntity.ok(userService.getAllRequestActive(publicKey));
     }
 }
