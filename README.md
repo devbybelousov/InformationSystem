@@ -30,7 +30,7 @@ user(id, userName, name, lastName, middleName, role, department),system, validit
 
 **Получение заявок конкретного пользователя (GET)**: _api/user/request_
 * входные данные: userId, publicKey (клиента)
-* выходные данные: data(спиок - id, user[id, userName, name, lastName, middleName, role, department], 
+* выходные данные: data(список - id, user[id, userName, name, lastName, middleName, role, department], 
 system, validity, status, date[day, month, year])
 * пример: api/user/request?userId=1publicKey=...
 
@@ -49,10 +49,27 @@ system, validity, status, date[day, month, year])
 * выходные данные: data(список - id, title)
 * пример: api/user/department?publicKey=...
 
+**Получить все информационные системы (GET)**: _api/user/system_
+* входные данные: publicKey (клиента)
+* выходные данные: data(список - id, title)
+* пример: api/user/system?publicKey=...
+
 **Изменить статус заявки (GET)**: _api/admin/update/status_
 * входные данные: requestId, status*
 * выходные данные: ok
 * пример: api/admin/update/status?requestId=1&status=STATUS_ENABLE
+
+**Добавить новую информационную систему (POST)**: _api/admin/add/system_
+* входные данные: message(title)
+* выходные данные: ok
+
+**Добавить новый отдел (POST)**: _api/admin/add/unit_
+* входные данные: message(title)
+* выходные данные: ok
+
+**Добавить новое подразделение (POST)**: _api/admin/add/department_
+* входные данные: message(title, unitId)
+* выходные данные: ok
 
 _*status - нужно отправить одно из (STATUS_ENABLE, STATUS_DISABLE, STATUS_REFUSED, STATUS_SHIPPED)_
 

@@ -41,4 +41,9 @@ public class UserController {
     public ResponseEntity<?> getAllDepartments(@RequestParam (name = "publicKey") String publicKey){
         return ResponseEntity.ok(userService.getAllDepartment(publicKey));
     }
+
+    @GetMapping("/system")
+    public ResponseEntity<?> getAllSystem(@RequestParam (name = "publicKey") String publicKey){
+        return ResponseEntity.ok(userService.getAllSystem(publicKey));
+    }
 }

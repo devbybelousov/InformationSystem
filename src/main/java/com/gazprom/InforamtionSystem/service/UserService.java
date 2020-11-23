@@ -174,4 +174,36 @@ public class UserService {
         List<Role> roleList = roleRepository.findAll();
         return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(roleList), publicKey);
     }
+
+    public String createSystem(String message){
+        String titleSystem = (String) CipherUtility.decrypt(message);
+        InformationSystem informationSystem = new InformationSystem();
+        informationSystem.setTitle(titleSystem);
+        systemRepository.save(informationSystem);
+        return "System is create.";
+    }
+
+    public String createUnit(String message){
+        String titleUnit = (String) CipherUtility.decrypt(message);
+        Unit unit = new Unit();
+        unit.setTitle(titleUnit);
+        unitRepository.save(unit);
+        return "Unit is create.";
+    }
+
+    public String createDepartment(String message){
+        DepartmentRequest departmentRequest = (DepartmentRequest) CipherUtility.decrypt(message);
+        Unit unit = unitRepository.findById(departmentRequest.getUnitId()).orElseThrow();
+        Department department = new Department();
+        department.setTitle(departmentRequest.getTitle());
+        department.setUnit(unit);
+        departmentRepository.save(department);
+        return "Department is create.";
+    }
+
+    @SneakyThrows
+    public String getAllSystem(String publicKey){
+        List<InformationSystem> systemList = systemRepository.findAll();
+        return CipherUtility.encrypt(ConverterJson.arrayConverterToJSON(systemList), publicKey);
+    }
 }

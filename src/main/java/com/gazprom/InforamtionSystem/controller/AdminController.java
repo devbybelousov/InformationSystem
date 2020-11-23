@@ -17,7 +17,7 @@ public class AdminController {
     UserService userService;
 
     @PostMapping("/create/user")
-    public ResponseEntity<?> registerUser(@RequestParam String cipherText) {
+    public ResponseEntity<?> registerUser(@RequestBody String cipherText) {
         UserRequest signUpRequest = (UserRequest) CipherUtility.decrypt(cipherText);
         if(userService.createUser(signUpRequest))
             return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
@@ -41,5 +41,19 @@ public class AdminController {
         return ResponseEntity.ok(userService.getAllRole(publicKey));
     }
 
+    @GetMapping("/add/system")
+    public ResponseEntity<?> createInformationSystem(@RequestBody String message){
+        return ResponseEntity.ok(userService.createSystem(message));
+    }
+
+    @PostMapping("/add/unit")
+    public ResponseEntity<?> createUnit(@RequestBody String message){
+        return ResponseEntity.ok(userService.createUnit(message));
+    }
+
+    @GetMapping("/add/department")
+    public ResponseEntity<?> createDepartment(@RequestBody String message){
+        return ResponseEntity.ok(userService.createDepartment(message));
+    }
 
 }
