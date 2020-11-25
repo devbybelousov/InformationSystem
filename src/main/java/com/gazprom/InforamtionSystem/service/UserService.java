@@ -1,6 +1,5 @@
 package com.gazprom.InforamtionSystem.service;
 
-import com.gazprom.InforamtionSystem.enumeration.RoleName;
 import com.gazprom.InforamtionSystem.enumeration.StatusName;
 import com.gazprom.InforamtionSystem.exception.AppException;
 import com.gazprom.InforamtionSystem.model.*;
@@ -106,10 +105,13 @@ public class UserService {
         InformationSystem informationSystem = systemRepository.findByTitle(applicationRequest.getSystem());
         Request request = new Request(StatusName.STATUS_SHIPPED.toString(),
                                     Timestamp.valueOf(
-                                                    applicationRequest.getDate().getYear() + "-" +
-                                                    applicationRequest.getDate().getMonth() + "-" +
-                                                    applicationRequest.getDate().getDay() + " 00:00:00.0"),
-                                    applicationRequest.getValidity(),
+                                                    applicationRequest.getFillingDate().getYear() + "-" +
+                                                    applicationRequest.getFillingDate().getMonth() + "-" +
+                                                    applicationRequest.getFillingDate().getDay() + " 00:00:00.0"),
+                                    Timestamp.valueOf(
+                                                    applicationRequest.getExpiryDate().getYear() + "-" +
+                                                    applicationRequest.getExpiryDate().getMonth() + "-" +
+                                                    applicationRequest.getExpiryDate().getDay() + " 00:00:00.0"),
                                     user,
                                     informationSystem);
         requestRepository.save(request);
@@ -145,9 +147,11 @@ public class UserService {
                             request.getUser().getRoles().iterator().next(),
                             request.getUser().getDepartment()),
                     request.getInformationSystem().getTitle(),
-                    request.getValidity(),
+                    new DataRequest(request.getExpiryDate().getDay(),
+                            request.getExpiryDate().getMonth(),
+                            request.getExpiryDate().getYear()),
                     request.getStatus(),
-                    new FillingData(request.getFilingDate().getDay(),
+                    new DataRequest(request.getFilingDate().getDay(),
                             request.getFilingDate().getMonth(),
                             request.getFilingDate().getYear())
 

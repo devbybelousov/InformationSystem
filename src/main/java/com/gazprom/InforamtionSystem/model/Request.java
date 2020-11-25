@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 @Data
@@ -28,8 +26,8 @@ public class Request {
     @Column(name = "filing_date")
     private Timestamp filingDate;
 
-    @Column(name = "validity")
-    private Long validity;
+    @Column(name = "expiry_date")
+    private Timestamp expiryDate;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
@@ -40,11 +38,11 @@ public class Request {
     private InformationSystem informationSystem;
 
 
-    public Request(String status, Timestamp filingDate, Long validity, User user, InformationSystem system) {
+    public Request(String status, Timestamp filingDate, Timestamp expiryDate, User user, InformationSystem system) {
         this.status = status;
         this.filingDate = filingDate;
         this.informationSystem = system;
-        this.validity = validity;
+        this.expiryDate = expiryDate;
         this.user = user;
     }
 }

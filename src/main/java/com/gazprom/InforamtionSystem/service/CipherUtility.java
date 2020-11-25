@@ -65,7 +65,6 @@ public class CipherUtility {
 
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PublicKey key = keyFactory.generatePublic(keySpecX509);
-        RSAPublicKey pubKey = (RSAPublicKey) keyFactory.generatePublic(keySpecX509);
         return CipherUtility.encrypt(plainText, key);
     }
 
@@ -74,7 +73,6 @@ public class CipherUtility {
         encryptCipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
         byte[] cipherText = encryptCipher.doFinal(plainText.getBytes(UTF_8));
-
         return Base64.getEncoder().encodeToString(cipherText);
     }
 

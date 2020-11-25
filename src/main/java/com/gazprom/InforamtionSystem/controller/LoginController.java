@@ -2,9 +2,11 @@ package com.gazprom.InforamtionSystem.controller;
 
 import com.gazprom.InforamtionSystem.enumeration.RoleName;
 import com.gazprom.InforamtionSystem.exception.AppException;
+import com.gazprom.InforamtionSystem.model.Department;
 import com.gazprom.InforamtionSystem.model.Role;
 import com.gazprom.InforamtionSystem.model.User;
 import com.gazprom.InforamtionSystem.payload.*;
+import com.gazprom.InforamtionSystem.repository.DepartmentRepository;
 import com.gazprom.InforamtionSystem.repository.RoleRepository;
 import com.gazprom.InforamtionSystem.repository.UserRepository;
 import com.gazprom.InforamtionSystem.security.JwtTokenProvider;
@@ -51,6 +53,9 @@ public class LoginController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    DepartmentRepository departmentRepository;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody CipherRequest cipherRequest) {

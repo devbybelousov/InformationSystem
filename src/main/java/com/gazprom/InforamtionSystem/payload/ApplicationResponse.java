@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +11,7 @@ public class ApplicationResponse {
     private Long id;
     private UserProfile user;
     private String system;
-    private Long validity;
+    private DataRequest expiryDate;
     private String status;
-    private FillingData date;
+    private DataRequest fillingDate;
 }

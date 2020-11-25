@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FillingData {
+public class DataRequest {
     private int day;
     private int month;
     private int year;

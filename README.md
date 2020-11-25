@@ -21,17 +21,18 @@
 **Получение всех заявок (GET)**: _api/admin/all/request_
 * входные данные: publicKey(клиента),
 * выходные данные: message(список, где id, 
-user(id, userName, name, lastName, middleName, role, department),system, validity, status, date)
+user[id, userName, name, lastName, middleName, role, department],system, 
+expiryDate[day, month, year], status, fillingDate[day, month, year])
 * пример: api/admin/all/request?publicKey=...
 
 **Создание новой заявки (POST)**: _api/user/add/request_
-* входные данные: message(userId, system, validity, date[day, month, year])
+* входные данные: message(userId, system, expiryDate[day, month, year], fillingDate[day, month, year])
 * выходные данные: ok
 
 **Получение заявок конкретного пользователя (GET)**: _api/user/all/request_
 * входные данные: userId, publicKey (клиента)
 * выходные данные: data(список - id, user[id, userName, name, lastName, middleName, role, department], 
-system, validity, status, date[day, month, year])
+system, expiryDate[day, month, year], status, fillingDate[day, month, year])
 * пример: api/user/request?userId=1publicKey=...
 
 **Получить все отделы (GET)**: _api/user/all/unit_
